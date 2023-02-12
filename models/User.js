@@ -2,7 +2,7 @@
 const { Schema, model } = require("mongoose");
 
 // require other models
-const thoughtSchema = require('./Thought')
+const thoughtsSchema = require('./Thoughts')
 
 // email validation
 require("mongoose-type-email");
@@ -16,12 +16,15 @@ const userSchema = new Schema(
       trimmed: true
     },
     email: {
-      type: mongoose.SchemaType.email,
+      type: String,
       required: true,
       unique: true
     },
-    thoughts: [thoughtSchema],
-    friends: [this._id]
+    thoughts: [{
+      type: Schema.Types.ObjectId,
+      ref: 'thoughts'
+    }],
+    friends: [this]
   },
   {
     toJSON: {
@@ -35,6 +38,4 @@ userSchema.virtual('friendCount').get(function() {
   return `${this.friends.length}`
 });
 
-const User = model('user', userSchema);
-
-module.exports = {User, userSchema};
+module.exports = model('user', userSchema)
