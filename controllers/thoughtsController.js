@@ -29,16 +29,34 @@ module.exports = {
         res.status(500).json(err);
       });
   },
-  // TO-DO -- FINISH THIS CONTROLLER
   // create thought
   createThought(req, res) {
-    Thoughts.create(req.body);
+    Thoughts.create(req.body)
+      .then((thought) => {
+        return User.findOneAndUpdate(
+          { username: req.body.username },
+          { $addToSet: { thoughts: thought._id } },
+          { new: true }
+        );
+      })
+      .then((user) => {
+        if (!user) {
+          res.status(404).json({ message: "Unable to create thought!" });
+        } else {
+          res.json("Thought created!");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
   },
   // update thought by _id
   updateThought(req, res) {
     Thoughts.findOneAndUpdate(
       { _id: req.params.thoughtId },
-      { runValidators: true, new: true }
+      { thoughtText: req.body.thoughtText , username: req.body.username },
+      { new: true }
     )
       .then((thought) => {
         if (!thought) {
@@ -61,7 +79,7 @@ module.exports = {
           res.status(404).json({ message: "No thought with that ID!" });
         } else {
           console.log("Thought deleted!");
-          req.json(thought);
+          res.json(thought);
         }
       })
       .catch((err) => {

@@ -7,6 +7,6 @@ const thoughtRoutes = require('./thoughtRoutes');
 
 // set up the end points for the files
 router.use('/users', userRoutes);
-//router.use('/thoughts', thoughtRoutes);
+router.use('/thoughts', thoughtRoutes);
 
 module.exports = router;
