@@ -1,4 +1,4 @@
-const { User, Thoughts } = require("../models/index");
+const { User, Thoughts, Reactions } = require("../models/index");
 
 module.exports = {
   // get all thoughts
@@ -55,7 +55,7 @@ module.exports = {
   updateThought(req, res) {
     Thoughts.findOneAndUpdate(
       { _id: req.params.thoughtId },
-      { thoughtText: req.body.thoughtText , username: req.body.username },
+      { thoughtText: req.body.thoughtText, username: req.body.username },
       { new: true }
     )
       .then((thought) => {
@@ -84,6 +84,49 @@ module.exports = {
       })
       .catch((err) => {
         console.log(err);
+        res.status(500).json(err);
+      });
+  },
+  // create reaction
+  createReaction(req, res) {
+    Thoughts.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $addToSet: { reactions: req.body } },
+      { new: true }
+    )
+      .then((thought) => {
+        console.log(req.params.thoughtId)
+        if (!thought) {
+          console.log("Unable to create reaction!");
+        } else {
+          console.log("Reaction created!");
+          res.json(thought);
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+        res.status(500).json(err)
+      })
+  },
+  // delete reaction
+  deleteReaction(req, res) {
+    Thoughts.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $pull: { reactions: { reactionId : req.query.reactionId } }},
+      { upsert: true }
+    )
+      .then((thought) => {
+        console.log(thought)
+        if (!thought) {
+          console.log("No thought found with that id!");
+        } else {
+          console.log("Reaction deleted!");
+          res.json(thought);
+        }
+      })
+      .catch((err) => {
+        console.log(req.query.reactionId)
+        console.log(err)
         res.status(500).json(err);
       });
   }

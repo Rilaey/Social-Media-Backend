@@ -75,5 +75,45 @@ module.exports = {
         console.log(err);
         res.status(500).json(err);
       });
+  },
+  // add new friend to friends list
+  addFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.userId},
+      { $addToSet: { friends: req.params.friendId} },
+      { runValidators: true, new: true }
+    )
+      .then((user) => {
+        if(!user) {
+          console.log('Unable to add friend!')
+        } else {
+          console.log('Friend added!')
+          res.json(user)
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+        res.status(500).json(err)
+      })
+  },
+  // delete friend from friends list
+  deleteFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $pull: { friends: req.params.friendId } },
+      { runValidators: true, new: true }
+    )
+      .then((user) => {
+        if(!user) {
+          console.log('Unable to delete friend!')
+        } else {
+          console.log('Friend Deleted!')
+          res.json(user)
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+        res.status(500).json(err);
+      })
   }
 };
