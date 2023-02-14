@@ -22,6 +22,8 @@
 ## Usage
 
 - Clone the repo. Then, run "npm i" in the terminal of the root directory.
+- Walk through video
+- [MC-18.webm](https://user-images.githubusercontent.com/94302477/218627345-b4dfa87c-3801-4644-a267-9a6f11b2aa44.webm)
 
 ## License
 
