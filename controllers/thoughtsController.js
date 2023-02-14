@@ -113,7 +113,7 @@ module.exports = {
     Thoughts.findOneAndUpdate(
       { _id: req.params.thoughtId },
       { $pull: { reactions: { reactionId : req.query.reactionId } }},
-      { upsert: true }
+      //{ upsert: true }
     )
       .then((thought) => {
         console.log(thought)
